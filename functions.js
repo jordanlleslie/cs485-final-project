@@ -52,33 +52,38 @@ async function updateEditor(range, modelOutput) {
   /*
   Update editor with suggested message, accept/deny buttons
   */
-  quill.updateContents(
-    new Delta()
-      .retain(range.index + range.length + 1)
-      .insert("\n")
-      .insert(modelOutput)
-      .insert("\n\n")
-      .insert("Accept")
-  );
+
+  const targetLength = range.length;
+  const targetIndex = range.index;
+
+  const totalLength = quill.getLength() - 1;
+
+  modelOutput = "This is a test";
+
+  // TODO: UI for user input accepting/rejecting suggestion, then remove UI after accept/reject
+  let accepted = 1;
+  if (accepted) {
+    // Replace original text with suggestion
+    quill.updateContents(
+      new Delta().retain(targetIndex).delete(targetLength).insert(modelOutput)
+    );
+  }
 }
 
 document
   .querySelector("#myButton")
   .addEventListener("click", async function () {
-    let range = quill.getSelection(true);
     const modelOutput = call_gpt();
   });
 
 document
   .querySelector("#myButton1")
   .addEventListener("click", async function () {
-    let range = quill.getSelection(true);
     const modelOutput = call_gpt();
   });
 
 document
   .querySelector("#myButton2")
   .addEventListener("click", async function () {
-    let range = quill.getSelection(true);
     const modelOutput = call_gpt();
   });

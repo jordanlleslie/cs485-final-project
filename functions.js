@@ -2,37 +2,48 @@
 // API STUFF ///////////
 ////////////////////////
 
-function call_gpt() {
-  /*
-  TODO: Update this to call GPT with prompt
-  */
-  let message = "default";
-  const xhr = new XMLHttpRequest();
-  // Set the request method and URL.
-  xhr.open("GET", "https://mocki.io/v1/baff67f5-4af8-4d62-86ad-f49d75ce98fc");
+// Make a request to the OpenAI ChatGPT API
+async function fetchData(prompt) {
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          "Bearer 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", // Replace with your actual API key
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+      }),
+    });
 
-  // Set the request header.
-  xhr.setRequestHeader("Accept", "application/json");
-
-  // Send the request.
-  xhr.send();
-
-  // Listen for the response.
-  xhr.onload = function () {
-    if (xhr.status === 200) {
-      // Success!
-      const response = JSON.parse(xhr.responseText);
-      message = response.data;
-      let range = quill.getSelection(true);
-      updateEditor(range, message);
-      // console.log(findText());
-    } else {
-      // Error!
-      console.error(xhr.statusText);
-      message = null;
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  };
-  return message;
+
+    const data = await response.json();
+    const message = data.choices[0].message.content;
+    return message;
+  } catch (error) {
+    console.error("Error:", error.message);
+    return null;
+  }
+}
+
+async function call_gpt() {
+  let range = quill.getSelection(true);
+  const text = quill.getText(range.index, range.length);
+  const message = await fetchData(text);
+  if (message) {
+    console.log(message);
+    updateEditor(range, message);
+  }
 }
 
 ////////////////////////

@@ -2,6 +2,8 @@
 // API STUFF ///////////
 ////////////////////////
 
+import { OPENAI_API_KEY } from "./config.js";
+
 // Make a request to the OpenAI ChatGPT API
 async function fetchData(prompt) {
   try {
@@ -9,8 +11,7 @@ async function fetchData(prompt) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization:
-          "Bearer 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", // Replace with your actual API key
+        Authorization: `Bearer ${OPENAI_API_KEY}`, // Replace with your actual API key
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
@@ -84,7 +85,8 @@ async function updateEditor(range, modelOutput) {
 document
   .querySelector("#myButton")
   .addEventListener("click", async function () {
-    const modelOutput = call_gpt();
+    const modelOutput = await call_gpt();
+    console.log(modelOutput);
   });
 
 document

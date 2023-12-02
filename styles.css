@@ -1,0 +1,58 @@
+#myModal {
+  display: none;
+  position: absolute; /* Change 'fixed' to 'absolute' */
+  /* top: 50%;
+  left: 50%; */
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: rgba(241, 241, 241, 1);
+  border: 1px solid #888;
+  width: 300px;
+  text-align: center;
+  max-height: 80%; /* Set a maximum height for the modal */
+  overflow-y: auto; /* Add this property for vertical scrolling */
+  z-index: 1000;
+}
+#myModal.minimized {
+  width: 50px;
+  height: 50px;
+}
+#minimizeButton {
+  cursor: pointer;
+}
+#synthesizer,
+#smartFriend,
+#devilsAdvocate {
+  margin-right: 10px;
+  width: 150px;
+}
+
+#undo,
+#redo {
+  width: 80px;
+}
+body {
+  margin: 5%;
+  margin-bottom: 0;
+}
+
+#status-bar {
+  position: absolute;
+  right: 5%;
+  margin-right: 50px;
+  padding: 4px 10px;
+  border-radius: 5px;
+}
+
+#synthesizer:hover:after,
+#smartFriend:hover:after,
+#devilsAdvocate:hover:after {
+  content: attr(tooltip);
+  position: absolute;
+  padding: 5;
+  margin-left: -110;
+  margin-top: -30;
+  background-color: black;
+  color: white;
+  opacity: 0.8;
+}

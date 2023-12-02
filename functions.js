@@ -1,3 +1,32 @@
+const status = {
+  noSelection: {
+    message: "No text selection available",
+    color: "red",
+    auto: true,
+  },
+  loading: { message: "Loading ...", color: "green", auto: false },
+};
+
+const statusBar = document.querySelector("#status-bar");
+
+function displayStatus(status) {
+  statusBar.textContent = status.message;
+  statusBar.style.backgroundColor = status.color;
+  statusBar.style.visibility = "visible";
+  if (status.auto)
+    setTimeout(() => {
+      statusBar.style.visibility = "hidden";
+    }, 2000);
+}
+
+function toggleButtons() {
+  const daemons = document.querySelectorAll(".daemon");
+  daemons.forEach((daemon) => {
+    daemon.disabled = !daemon.disabled;
+    daemon.classList.toggle("disabled-daemon");
+  });
+}
+
 ////////////////////////
 // API STUFF ///////////
 ////////////////////////
@@ -6,6 +35,8 @@ import { OPENAI_API_KEY } from "./config.js";
 
 // Make a request to the OpenAI ChatGPT API
 async function callGPT(messages) {
+  toggleButtons();
+  displayStatus(status["loading"]);
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -18,6 +49,9 @@ async function callGPT(messages) {
         messages: messages,
       }),
     });
+
+    statusBar.style.visibility = "hidden";
+    toggleButtons();
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -144,6 +178,10 @@ function getSelectedText() {
   return selectedText;
 }
 
+////////////////////////
+// HELPER FUNCTIONS ////
+////////////////////////
+
 function showPopup(selectionInfo) {
   // Get the modal element
   const modal = document.getElementById("myModal");
@@ -163,18 +201,6 @@ function showPopup(selectionInfo) {
 
   // Display the modal
   modal.style.display = "block";
-
-  // setTimeout(() => {
-  //   modal.style.display = "none";
-  // }, 3000);
-}
-
-function toggleModal() {
-  const modal = document.getElementById("myModal");
-  modal.classList.toggle("minimized");
-  modal.style.display = modal.classList.contains("minimized")
-    ? "block"
-    : "none";
 }
 
 document
@@ -210,24 +236,3 @@ document.querySelector("#undo").addEventListener("click", function () {
 document.querySelector("#redo").addEventListener("click", function () {
   quill.history.redo();
 });
-
-document
-  .querySelector("#toggleModalButton")
-  .addEventListener("click", function () {
-    toggleModal();
-  });
-
-const status = {
-  noSelection: { message: "No text selection available", color: "red" },
-  loading: { message: "Loading", color: "blue" },
-};
-
-function displayStatus(status) {
-  const statusBar = document.querySelector("#status-bar");
-  statusBar.textContent = status.message;
-  statusBar.style.backgroundColor = status.color;
-  statusBar.style.visibility = "visible";
-  setTimeout(() => {
-    statusBar.style.visibility = "hidden";
-  }, 2000);
-}

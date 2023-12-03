@@ -19,6 +19,9 @@ function displayStatus(status) {
     }, 2000);
 }
 
+
+
+
 function toggleButtons() {
   const daemons = document.querySelectorAll(".daemon");
   daemons.forEach((daemon) => {
@@ -93,7 +96,8 @@ async function devilsAdvocate(selectedText) {
   ];
 
   const output = await callGPT(messages);
-  console.log(output);
+  console.log(output)
+  return output;
 }
 
 async function smartFriend(selectedText) {
@@ -199,27 +203,44 @@ function getSelectedText() {
 ////////////////////////
 // HELPER FUNCTIONS ////
 ////////////////////////
+let closeModalBtn;
 
-function showPopup(selectionInfo) {
-  // Get the modal element
-  const modal = document.getElementById("myModal");
-  console.log("selection info: " + selectionInfo);
-  const endBounds = quill.getBounds(selectionInfo);
-  const top = endBounds.bottom + window.scrollY + "px";
-  const left = endBounds.left + window.scrollX + "px";
+async function showPopup(selectionInfo) {
 
-  // Set the position of the modal
-  modal.style.top = top;
-  modal.style.left = left;
+  const modal = $("#myModal");
 
-  // Display the text and position info in the modal
-  modal.innerHTML = `<p>Selected Text: ${"i"}</p>
-                     <p>Start Index: ${"am"}</p>
-                     <p>End Index: ${"mad"}</p>`;
 
-  // Display the modal
-  modal.style.display = "block";
+
+  modal.css({
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  });
+
+
+  modal.draggable({
+    handle: ".modal-header", 
+  });
+  const output = await devilsAdvocate(selectionInfo);
+
+  modal.html(`
+    <p>${selectionInfo}</p>
+
+    <div class="modal-header">
+      <button id="closeModalBtn">Close</button>
+    </div>
+  `);
+
+
+  modal.css("display", "block");
+
+
+  closeModalBtn = $("#closeModalBtn");
+  closeModalBtn.on("click", function () {
+    modal.css("display", "none");
+  });
 }
+
 
 document
   .querySelector("#synthesizer")
@@ -237,14 +258,14 @@ document
     smartFriend(selection.text);
   });
 
-document
+  document
   .querySelector("#devilsAdvocate")
   .addEventListener("click", async function () {
     const selection = getSelectedText();
     if (!selection) return;
-    const selectedTextEndRange = selection.endIndex;
-    devilsAdvocate(selection.text);
-    showPopup(selectedTextEndRange);
+    const devil_output = await devilsAdvocate(selection.text);
+    await showPopup(devil_output);
+    
   });
 
 document.querySelector("#undo").addEventListener("click", function () {

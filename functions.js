@@ -72,7 +72,9 @@ async function devilsAdvocate(selectedText) {
       role: "system",
       content:
         "You are a helpful AI designed to challenge users. \
-        The user will input a statement, and you should ask 3 questions which challenges the user's statement. \
+        The user will input a statement, and you should ask 3 questions which challenges the user's statement.\
+        If the text is not a statement, explain your intended purpose to the user, without offering help that you cannot give. \
+        Be specific and brief about your intended purpose.\
         The purpose of providing these questions is to help the user strengthen their writing against counter-arguments.\
         After each question, briefly explain how answering the question can strengthen the argument.",
     },
@@ -100,9 +102,10 @@ async function smartFriend(selectedText) {
       role: "system",
       content:
         "You are a helpful AI designed to help users make their writing less verbose. \
-        the user will input text, and you should revise the text to be less verbose while \
-        retaining the original meaning of the text. If the text is not verbose, do not make any \
-        changes, and respond with the original text with no modifications.",
+        The user will input a text sample. \
+        If the text is not verbose, respond with the original text.\
+        If the text is verbose, you should revise the text to be less verbose.\
+        Do not add or remove meaning from the text. Only revise as far as you can without changing the meaning.",
     },
     {
       role: "user",
@@ -123,8 +126,8 @@ async function synthesizer(selectedText) {
         "You are a helpful AI designed to help users reduce the redundancy in their writing. \
         The user will input a text sample.\
         If the text contains no redundancies, respond with the original text.\
-        If there are redundancies, you should revise the text sample to be less redundant, without removing any meaning from the text. \
-        ",
+        If there are redundancies, you should revise the text sample to be less redundant.\
+        Do not add or remove meaning from the text. Only revise as far as you can without changing the meaning.",
     },
     {
       role: "user",

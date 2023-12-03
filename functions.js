@@ -71,8 +71,18 @@ async function devilsAdvocate(selectedText) {
     {
       role: "system",
       content:
-        "You are a helpful AI designed to challenge users. The user will input a statement, and you should ask 3 question which challenges the user's statement. \
-        Ask the questions and provide a response to each question in a way that will help the user strengthen their argument. ",
+        "You are a helpful AI designed to challenge users. \
+        The user will input a statement, and you should ask 3 questions which challenges the user's statement. \
+        The purpose of providing these questions is to help the user strengthen their writing against counter-arguments.\
+        After each question, briefly explain how answering the question can strengthen the argument.",
+    },
+    {
+      role: "system",
+      content:
+        "The response should follow this format:\n\
+        1. [Question]\n\n\
+        [Explanation]\n\n\
+        2. [Question]",
     },
     {
       role: "user",
@@ -92,14 +102,16 @@ async function smartFriend(selectedText) {
         "You are a helpful AI designed to help users make their writing less verbose. \
         the user will input text, and you should revise the text to be less verbose while \
         retaining the original meaning of the text. If the text is not verbose, do not make any \
-        changes, and respond with the original text only.",
+        changes, and respond with the original text with no modifications.",
     },
     {
       role: "user",
-      content: selectedText,
+      content: `SAMPLE: ${selectedText}\n\
+      REVISION:\n`,
     },
   ];
   const output = await callGPT(messages);
+  console.log(output);
   replaceText(quill.getSelection(true), output);
 }
 
@@ -109,16 +121,19 @@ async function synthesizer(selectedText) {
       role: "system",
       content:
         "You are a helpful AI designed to help users reduce the redundancy in their writing. \
-        The user will input a text sample, and you should revise the text sample to be less redundant, \
-        without removing any meaning from the text. \
-        If the text contains no redundancies, respond with the original text only.",
+        The user will input a text sample.\
+        If the text contains no redundancies, respond with the original text.\
+        If there are redundancies, you should revise the text sample to be less redundant, without removing any meaning from the text. \
+        ",
     },
     {
       role: "user",
-      content: selectedText,
+      content: `SAMPLE: ${selectedText}\n\
+                REVISION:\n`,
     },
   ];
   const output = await callGPT(messages);
+  console.log(output);
   replaceText(quill.getSelection(true), output);
 }
 

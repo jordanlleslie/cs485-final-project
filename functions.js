@@ -170,12 +170,16 @@ async function replaceText(range, modelOutput) {
   quill.updateContents(
     new Delta().retain(targetIndex).delete(targetLength).insert(modelOutput)
   );
+  quill.formatText(targetIndex, targetLength, "background", "#99d1bc");
+  setTimeout(() => {
+    quill.removeFormat(targetIndex, targetLength);
+  }, 2000);
 }
 
 function getSelectedText() {
   const range = quill.getSelection(true);
 
-  if (range.length !== 0)
+  if (range.length !== 0 && range.index !== 0)
     return {
       text: quill.getText(range.index, range.length),
       startIndex: range.index,
@@ -213,9 +217,7 @@ function showPopup(selectionInfo) {
   modal.style.left = left;
 
   // Display the text and position info in the modal
-  modal.innerHTML = `<p>Selected Text: ${"i"}</p>
-                     <p>Start Index: ${"am"}</p>
-                     <p>End Index: ${"mad"}</p>`;
+  modal.innerHTML = `<p>Selected Text: ${"i"}</p>`;
 
   // Display the modal
   modal.style.display = "block";

@@ -174,12 +174,15 @@ async function replaceText(range, modelOutput) {
   quill.updateContents(
     new Delta().retain(targetIndex).delete(targetLength).insert(modelOutput)
   );
+  quill.formatText(targetIndex, targetLength, "background", "#99d1bc");
+  setTimeout(() => {
+    quill.removeFormat(targetIndex, targetLength);
+  }, 2000);
 }
 
 function getSelectedText() {
   const range = quill.getSelection(true);
-
-  if (range.length !== 0)
+  if (range.length !== 0 && range.index !== 0)
     return {
       text: quill.getText(range.index, range.length),
       startIndex: range.index,
@@ -188,12 +191,12 @@ function getSelectedText() {
 
   // No text selection, call function on entire text window
   const selectedText = {
-    text: quill.getText(0, range.index),
+    text: quill.getText(0, quill.getLength()),
     startIndex: 0,
     endIndex: range.index - 1,
   };
 
-  if (selectedText.text.length === 0) {
+  if (selectedText.text.length < 2) {
     displayStatus(status["noSelection"]);
     return null;
   }
@@ -208,7 +211,6 @@ let closeModalBtn;
 async function showPopup(selectionInfo) {
 
   const modal = $("#myModal");
-
 
 
   modal.css({

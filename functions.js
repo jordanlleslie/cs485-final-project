@@ -178,7 +178,6 @@ async function replaceText(range, modelOutput) {
 
 function getSelectedText() {
   const range = quill.getSelection(true);
-
   if (range.length !== 0 && range.index !== 0)
     return {
       text: quill.getText(range.index, range.length),
@@ -188,12 +187,12 @@ function getSelectedText() {
 
   // No text selection, call function on entire text window
   const selectedText = {
-    text: quill.getText(0, range.index),
+    text: quill.getText(0, quill.getLength()),
     startIndex: 0,
     endIndex: range.index - 1,
   };
 
-  if (selectedText.text.length === 0) {
+  if (selectedText.text.length < 2) {
     displayStatus(status["noSelection"]);
     return null;
   }

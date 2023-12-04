@@ -76,7 +76,7 @@ async function devilsAdvocate(selectedText) {
         If the text is not a statement, explain your intended purpose to the user, without offering help that you cannot give. \
         Be specific and brief about your intended purpose.\
         The purpose of providing these questions is to help the user strengthen their writing against counter-arguments.\
-        After each question, briefly explain how answering the question can strengthen the argument.",
+        After each question, very briefly explain why the user might want to address the question to strengthen their argument.",
     },
     {
       role: "system",

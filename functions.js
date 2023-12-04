@@ -250,15 +250,15 @@ async function showPopup(selectionInfo) {
       // Hide devilOutputContainer and clear its content on closing the modal
       devilOutputContainer.removeClass("visible");
       devilsAdvocateOutput.empty();
-      modal.css("display", "none");
+      // modal.css("display", "none");
     });
 
-  modal.css("display", "block");
+  // modal.css("display", "block");
 
-  closeModalBtn = $("#closeModalBtn");
-  closeModalBtn.on("click", function () {
-    modal.css("display", "none");
-  });
+  // closeModalBtn = $("#closeModalBtn");
+  // closeModalBtn.on("click", function () {
+  //   modal.css("display", "none");
+  // });
 }
 
 document

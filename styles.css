@@ -17,6 +17,7 @@
   margin-top: 20px;
   padding: 10px;
   border: 2px solid #ff0000; /* Border color for emphasis */
+  font-family: sans-serif;
 }
 
 #devilOutputContainer.visible {

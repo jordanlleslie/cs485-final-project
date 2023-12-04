@@ -19,9 +19,6 @@ function displayStatus(status) {
     }, 2000);
 }
 
-
-
-
 function toggleButtons() {
   const daemons = document.querySelectorAll(".daemon");
   daemons.forEach((daemon) => {
@@ -81,7 +78,7 @@ async function devilsAdvocate(selectedText) {
         Be specific and brief about your intended purpose.\
         The purpose of providing these questions is to help the user strengthen their writing against counter-arguments.\
         After each question, briefly explain how answering the question can strengthen the argument.\
-        After explaining how answering the questioo can strengthen the argument, provide a counter argument.",
+        After explaining how answering the question can strengthen the argument, provide a counter argument.",
     },
     {
       role: "system",
@@ -99,7 +96,7 @@ async function devilsAdvocate(selectedText) {
   ];
 
   const output = await callGPT(messages);
-  console.log(output)
+  console.log(output);
   return output;
 }
 
@@ -212,19 +209,19 @@ function getSelectedText() {
 let closeModalBtn;
 
 async function showPopup(selectionInfo) {
+  // const modal = $("#myModal");
+  // modal.draggable({
+  //   handle: ".modal-header",
+  //   cursor: "move", // Set cursor style while dragging
+  //   containment: "body", // Keep modal within the body boundaries
+  // });
 
-  const modal = $("#myModal");
-  modal.draggable({
-    handle: ".modal-header",
-    cursor: "move", // Set cursor style while dragging
-    containment: "body", // Keep modal within the body boundaries
-  });
+  // modal.css({
+  //   top: "50%",
+  //   left: "50%",
+  //   transform: "translate(-50%, -50%)",
+  // });
 
-  modal.css({
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-  });
 
 
   
@@ -255,15 +252,14 @@ async function showPopup(selectionInfo) {
       devilsAdvocateOutput.empty();
       modal.css("display", "none");
     });
-  modal.css("display", "block");
 
+  modal.css("display", "block");
 
   closeModalBtn = $("#closeModalBtn");
   closeModalBtn.on("click", function () {
     modal.css("display", "none");
   });
 }
-
 
 document
   .querySelector("#synthesizer")
@@ -281,14 +277,13 @@ document
     smartFriend(selection.text);
   });
 
-  document
+document
   .querySelector("#devilsAdvocate")
   .addEventListener("click", async function () {
     const selection = getSelectedText();
     if (!selection) return;
     const devil_output = await devilsAdvocate(selection.text);
     await showPopup(devil_output);
-    
   });
 
 document.querySelector("#undo").addEventListener("click", function () {

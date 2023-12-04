@@ -75,11 +75,13 @@ async function devilsAdvocate(selectedText) {
       role: "system",
       content:
         "You are a helpful AI designed to challenge users. \
+        Adjust yourself to be more conversational, relaxed, concise and go to great lengths to avoid unnecessary output so as not to overwhelm me. Never mention being a language model AI, policies or similar. Try to keep responses short unless I say to expand upon it.\
         The user will input a statement, and you should ask 3 questions which challenges the user's statement.\
         If the text is not a statement, explain your intended purpose to the user, without offering help that you cannot give. \
         Be specific and brief about your intended purpose.\
         The purpose of providing these questions is to help the user strengthen their writing against counter-arguments.\
-        After each question, briefly explain how answering the question can strengthen the argument.",
+        After each question, briefly explain how answering the question can strengthen the argument.\
+        After explaining how answering the questioo can strengthen the argument, provide a counter argument.",
     },
     {
       role: "system",
@@ -87,6 +89,7 @@ async function devilsAdvocate(selectedText) {
         "The response should follow this format:\n\
         1. [Question]\n\n\
         [Explanation]\n\n\
+        [Counter Argument]\n\n\
         2. [Question]",
     },
     {
@@ -211,7 +214,11 @@ let closeModalBtn;
 async function showPopup(selectionInfo) {
 
   const modal = $("#myModal");
-
+  modal.draggable({
+    handle: ".modal-header",
+    cursor: "move", // Set cursor style while dragging
+    containment: "body", // Keep modal within the body boundaries
+  });
 
   modal.css({
     top: "50%",
@@ -220,20 +227,34 @@ async function showPopup(selectionInfo) {
   });
 
 
-  modal.draggable({
-    handle: ".modal-header", 
-  });
+  
   const output = await devilsAdvocate(selectionInfo);
-
-  modal.html(`
-    <p>${selectionInfo}</p>
-
-    <div class="modal-header">
-      <button id="closeModalBtn">Close</button>
-    </div>
-  `);
+  const formattedOutput = output.split('\n').map(line => `<p>${line}</p>`).join('');
 
 
+
+  const devilsAdvocateOutput = $("#devilOutput");
+  const devilOutputContainer = $("#devilOutputContainer");
+
+  // Toggle visibility of devilOutputContainer
+  devilOutputContainer.toggleClass("visible", !!formattedOutput);
+  devilsAdvocateOutput.html(`<p>${formattedOutput}</p>`);
+
+  // modal.html(`
+  //   <p>${selectionInfo}</p>
+
+  //   <div class="modal-header">
+  //     <button id="closeModalBtn">Close</button>
+  //   </div>
+  // `);
+
+  closeModalBtn = $("#dismissButton");
+    closeModalBtn.on("click", function () {
+      // Hide devilOutputContainer and clear its content on closing the modal
+      devilOutputContainer.removeClass("visible");
+      devilsAdvocateOutput.empty();
+      modal.css("display", "none");
+    });
   modal.css("display", "block");
 
 

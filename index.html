@@ -5,6 +5,9 @@
         <script src="./functions.js" type="module"></script>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
 
         <link rel="stylesheet" href="styles.css">
         
@@ -19,10 +22,15 @@
                 <li>The Devil's Advocate will suggest counter-arguments to your writing, to help you strengthen your reasoning and address opposing points.</li>
                 <li>Each daemon will work on the full text or alternatively highlight a portion of your text to make more specific changes.</li>
             </ul>
-        </div>
-        <div id="myModal">
+        <!-- </div>
+        <div id="myModal"> -->
 
         </div>
+        <div id="devilOutputContainer">
+            <div id="devilOutput"></div>
+            <button id="dismissButton">Close/Dismiss</button>
+        </div>
+
         <div id="toolbar">
             <button class="daemon" id="synthesizer" tooltip="Increases conciseness of text">👇 Synthesizer</button>
             <button class="daemon" id="smartFriend" tooltip="Reduces verboseness of text">🧠 Smart Friend</button>

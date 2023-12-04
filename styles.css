@@ -1,17 +1,26 @@
-#myModal {
+/* #myModal {
   display: none;
-  position: absolute; /* Change 'fixed' to 'absolute' */
+  position: absolute;
   transform: translate(-50%, -50%);
   padding: 20px;
   background-color: rgba(241, 241, 241, 1);
   border: 1px solid #888;
   width: 300px;
   text-align: center;
-  max-height: 80%; /* Set a maximum height for the modal */
-  overflow-y: auto; /* Add this property for vertical scrolling */
+  max-height: 80%; 
+  overflow-y: auto; 
   z-index: 1000;
+} */
+#devilOutputContainer {
+  display: none;
+  margin-top: 20px;
+  padding: 10px;
+  border: 2px solid #ff0000; /* Border color for emphasis */
 }
 
+#devilOutputContainer.visible {
+  display: block;
+}
 #synthesizer,
 #smartFriend,
 #devilsAdvocate {
@@ -25,6 +34,13 @@
   padding: 0 10px;
 }
 
+#undo {
+  background: url("./images/undo.png");
+}
+
+#redo {
+  background: url("./images/redo.png");
+}
 body {
   margin: 2% 5%;
   margin-bottom: 0;

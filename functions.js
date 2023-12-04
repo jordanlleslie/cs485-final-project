@@ -268,6 +268,8 @@ async function showPopup(output) {
 document
   .querySelector("#synthesizer")
   .addEventListener("click", async function () {
+    // remove prior highlights if any
+    quill.formatText(0, quill.getLength(), "background", false)
     const selection = getSelectedText();
     if (!selection) return;
     highlightSelection();
@@ -277,6 +279,8 @@ document
 document
   .querySelector("#smartFriend")
   .addEventListener("click", async function () {
+    // remove prior highlights if any
+    quill.formatText(0, quill.getLength(), "background", false)
     const selection = getSelectedText();
     if (!selection) return;
     highlightSelection();
@@ -286,6 +290,8 @@ document
 document
   .querySelector("#devilsAdvocate")
   .addEventListener("click", async function () {
+    // remove prior highlights if any
+    quill.formatText(0, quill.getLength(), "background", false)
     const selection = getSelectedText();
     if (!selection) return;
     highlightSelection();

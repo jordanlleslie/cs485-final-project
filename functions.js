@@ -19,9 +19,6 @@ function displayStatus(status) {
     }, 2000);
 }
 
-
-
-
 function toggleButtons() {
   const daemons = document.querySelectorAll(".daemon");
   daemons.forEach((daemon) => {
@@ -86,7 +83,7 @@ async function devilsAdvocate(selectedText) {
       content:
         "The response should follow this format:\n\
         1. [Question]\n\n\
-        [Explanation]\n\n\
+        Consider: [Explanation]\n\n\
         2. [Question]",
     },
     {
@@ -96,7 +93,7 @@ async function devilsAdvocate(selectedText) {
   ];
 
   const output = await callGPT(messages);
-  console.log(output)
+  console.log(output);
   return output;
 }
 
@@ -209,9 +206,7 @@ function getSelectedText() {
 let closeModalBtn;
 
 async function showPopup(selectionInfo) {
-
   const modal = $("#myModal");
-
 
   modal.css({
     top: "50%",
@@ -219,11 +214,9 @@ async function showPopup(selectionInfo) {
     transform: "translate(-50%, -50%)",
   });
 
-
   modal.draggable({
-    handle: ".modal-header", 
+    handle: ".modal-header",
   });
-  const output = await devilsAdvocate(selectionInfo);
 
   modal.html(`
     <p id="modalText">${selectionInfo}</p>
@@ -232,16 +225,13 @@ async function showPopup(selectionInfo) {
     </div>
   `);
 
-
   modal.css("display", "block");
-
 
   closeModalBtn = $("#closeModalBtn");
   closeModalBtn.on("click", function () {
     modal.css("display", "none");
   });
 }
-
 
 document
   .querySelector("#synthesizer")
@@ -259,14 +249,13 @@ document
     smartFriend(selection.text);
   });
 
-  document
+document
   .querySelector("#devilsAdvocate")
   .addEventListener("click", async function () {
     const selection = getSelectedText();
     if (!selection) return;
     const devil_output = await devilsAdvocate(selection.text);
     await showPopup(devil_output);
-    
   });
 
 document.querySelector("#undo").addEventListener("click", function () {

@@ -96,7 +96,6 @@ async function devilsAdvocate(selectedText) {
   ];
 
   const output = await callGPT(messages);
-  console.log(output);
   await showPopup(output); // display output
 }
 
@@ -118,8 +117,6 @@ async function smartFriend(selectedText) {
     },
   ];
   const output = await callGPT(messages);
-  console.log(output);
-  // replaceText(quill.getSelection(true), output);
   await showPopup(output); // display output
 }
 
@@ -141,8 +138,6 @@ async function synthesizer(selectedText) {
     },
   ];
   const output = await callGPT(messages);
-  console.log(output);
-  // replaceText(quill.getSelection(true), output);
   await showPopup(output); // display output
 }
 
@@ -159,7 +154,7 @@ var quill = new Quill("#editor", {
   },
 });
 
-async function highlightSelection(){
+async function highlightSelection() {
   const range = quill.getSelection(true);
   quill.formatText(range.index, range.length, "background", "#99d1bc");
 }
@@ -216,21 +211,10 @@ function getSelectedText() {
 let closeModalBtn;
 
 async function showPopup(output) {
-  // const modal = $("#myModal");
-  // modal.draggable({
-  //   handle: ".modal-header",
-  //   cursor: "move", // Set cursor style while dragging
-  //   containment: "body", // Keep modal within the body boundaries
-  // });
-
-  // modal.css({
-  //   top: "50%",
-  //   left: "50%",
-  //   transform: "translate(-50%, -50%)",
-  // });
-
-
-  const formattedOutput = output.split('\n').map(line => `<p>${line}</p>`).join('');
+  const formattedOutput = output
+    .split("\n")
+    .map((line) => `<p>${line}</p>`)
+    .join("");
 
   const devilsAdvocateOutput = $("#devilOutput");
   const devilOutputContainer = $("#devilOutputContainer");
@@ -239,37 +223,22 @@ async function showPopup(output) {
   devilOutputContainer.toggleClass("visible", !!formattedOutput);
   devilsAdvocateOutput.html(`<p>${formattedOutput}</p>`);
 
-  // modal.html(`
-  //   <p>${selectionInfo}</p>
-
-  //   <div class="modal-header">
-  //     <button id="closeModalBtn">Close</button>
-  //   </div>
-  // `);
-
   closeModalBtn = $("#dismissButton");
-    closeModalBtn.on("click", function () {
-      // Hide devilOutputContainer and clear its content on closing the modal
-      devilOutputContainer.removeClass("visible");
-      devilsAdvocateOutput.empty();
-      // unhighlight text
-      quill.formatText(0, quill.getLength(), "background", false)
-      // modal.css("display", "none");
-    });
-
-  // modal.css("display", "block");
-
-  // closeModalBtn = $("#closeModalBtn");
-  // closeModalBtn.on("click", function () {
-  //   modal.css("display", "none");
-  // });
+  closeModalBtn.on("click", function () {
+    // Hide devilOutputContainer and clear its content on closing the modal
+    devilOutputContainer.removeClass("visible");
+    devilsAdvocateOutput.empty();
+    // unhighlight text
+    quill.formatText(0, quill.getLength(), "background", false);
+    // modal.css("display", "none");
+  });
 }
 
 document
   .querySelector("#synthesizer")
   .addEventListener("click", async function () {
     // remove prior highlights if any
-    quill.formatText(0, quill.getLength(), "background", false)
+    quill.formatText(0, quill.getLength(), "background", false);
     const selection = getSelectedText();
     if (!selection) return;
     highlightSelection();
@@ -280,7 +249,7 @@ document
   .querySelector("#smartFriend")
   .addEventListener("click", async function () {
     // remove prior highlights if any
-    quill.formatText(0, quill.getLength(), "background", false)
+    quill.formatText(0, quill.getLength(), "background", false);
     const selection = getSelectedText();
     if (!selection) return;
     highlightSelection();
@@ -291,7 +260,7 @@ document
   .querySelector("#devilsAdvocate")
   .addEventListener("click", async function () {
     // remove prior highlights if any
-    quill.formatText(0, quill.getLength(), "background", false)
+    quill.formatText(0, quill.getLength(), "background", false);
     const selection = getSelectedText();
     if (!selection) return;
     highlightSelection();

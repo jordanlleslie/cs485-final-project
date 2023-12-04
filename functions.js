@@ -226,8 +226,7 @@ async function showPopup(selectionInfo) {
   const output = await devilsAdvocate(selectionInfo);
 
   modal.html(`
-    <p>${selectionInfo}</p>
-
+    <p id="modalText">${selectionInfo}</p>
     <div class="modal-header">
       <button id="closeModalBtn">Close</button>
     </div>

@@ -6,10 +6,15 @@
   background-color: rgba(241, 241, 241, 1);
   border: 1px solid #888;
   width: 300px;
-  text-align: center;
+  text-align: left;
   max-height: 80%; /* Set a maximum height for the modal */
   overflow-y: auto; /* Add this property for vertical scrolling */
   z-index: 1000;
+}
+
+#modalText {
+  font-family: sans-serif;
+  white-space: pre-wrap;
 }
 
 #synthesizer,

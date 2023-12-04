@@ -1,9 +1,8 @@
 #myModal {
   display: none;
-  position: absolute; /* Change 'fixed' to 'absolute' */
-  transform: translate(-50%, -50%);
+  position: absolute;
   padding: 20px;
-  background-color: rgba(241, 241, 241, 1);
+  background-color: #f1f1f1;
   border: 1px solid #888;
   width: 300px;
   text-align: left;
@@ -27,7 +26,11 @@
 #undo,
 #redo {
   width: 40px;
-  padding: 0 10px;
+  padding: 0 25px;
+}
+
+.ql-bold {
+  margin-left: 40px;
 }
 
 body {

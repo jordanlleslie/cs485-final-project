@@ -3,27 +3,47 @@
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
         <script src="./functions.js" type="module"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+
+        <link rel="stylesheet" href="styles.css">
+        
+  
     </head>
     <body>
-        
+        <div id="intro">
+            <h1>Demo: Daemons</h1>
+            <ul>
+                <li>Try writing in the text editor below! </li>
+                <li>The Synthesizer makes your writing more concise.</li>
+                <li>The Smart Friend makes your writing less jargony and verbose.</li>
+                <li>The Devil's Advocate will suggest counter-arguments to your writing, to help you strengthen your reasoning and address opposing points.</li>
+                <li>Each daemon will work on the full text or, alternatively, highlight a portion of your text to make more specific changes.</li>
+            </ul>
+
+        </div>
+        <div id="devilOutputContainer">
+            <div id="devilOutput"></div>
+            <button id="acceptButton">Accept</button>
+            <button id="dismissButton">Dismiss</button>
+        </div>
+
         <div id="toolbar">
-            <!-- Add a custom button -->
-            <style>
-                #myButton, #myButton1, #myButton2 {
-                    margin-right: 10px;
-                    width: 150px;
-                }
-            </style>
-        
-            <button id="myButton">👇 Synthesizer</button>
-            <button id="myButton1">🧠 Smart Friend</button>
-            <button id="myButton2">😈 Devil's Advocate</button>
+            <button class="daemon" id="synthesizer" tooltip="Increases conciseness">👇 Synthesizer</button>
+            <button class="daemon" id="smartFriend" tooltip="Reduces verboseness">🧠 Smart Friend</button>
+            <button class="daemon" id="devilsAdvocate" tooltip="Suggests counter-arguments">😈 Devil's Advocate</button>
+            <!-- ... other toolbar items ... -->
+            <button id="undo">undo</button>
+            <button id="redo">redo</button>
+            
             <!-- Other toolbar items -->
-        
             <button class="ql-bold">Bold</button>
             <button class="ql-italic">Italic</button>
-            <!-- ... other toolbar items ... -->
-          </div>
+            <div id="status-bar"></div>
+        </div>
         
           <div id="editor">
             <!-- This is where Quill will place the editor's content -->

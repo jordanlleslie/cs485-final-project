@@ -1,0 +1,92 @@
+/* #myModal {
+  display: none;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #f1f1f1;
+  border: 1px solid #888;
+  width: 300px;
+
+  text-align: center;
+  max-height: 80%; 
+  overflow-y: auto; 
+  z-index: 1000;
+} */
+#devilOutputContainer {
+  display: none;
+  margin-top: 20px;
+  padding: 10px;
+  border: 2px solid #ff0000; /* Border color for emphasis */
+  font-family: sans-serif;
+}
+
+#devilOutputContainer.visible {
+  display: block;
+}
+#synthesizer,
+#smartFriend,
+#devilsAdvocate {
+  margin-right: 10px;
+  width: 150px;
+}
+
+#undo,
+#redo {
+  width: 40px;
+  padding: 0 25px;
+}
+
+.ql-bold {
+  margin-left: 40px;
+}
+
+body {
+  margin: 2% 5%;
+  margin-bottom: 0;
+}
+
+#status-bar {
+  position: absolute;
+  right: 5%;
+  margin-right: 50px;
+  padding: 4px 10px;
+  border-radius: 5px;
+  opacity: 0.8;
+  color: white;
+}
+
+#synthesizer:hover:after,
+#smartFriend:hover:after,
+#devilsAdvocate:hover:after {
+  content: attr(tooltip);
+  position: absolute;
+  padding: 5;
+  margin-left: -110;
+  margin-top: -30;
+  background-color: black;
+  color: white;
+  opacity: 0.8;
+  border-radius: 5px;
+}
+
+#intro {
+  margin-bottom: 50px;
+  font-family: sans-serif;
+}
+
+#intro ul {
+  padding: 0;
+  list-style: none;
+}
+
+#intro li {
+  margin-bottom: 1rem;
+}
+
+.disabled-daemon {
+  opacity: 0.5;
+}
+
+.disabled-daemon:hover {
+  cursor: default !important;
+}

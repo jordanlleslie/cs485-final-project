@@ -108,6 +108,7 @@ async function smartFriend(selectedText) {
         The user will input a text sample. \
         If the text is not verbose, respond with the original text.\
         If the text is verbose, you should revise the text to be less verbose.\
+        Replace jargon with words that the average person can understand. \
         Do not add or remove meaning from the text. Only revise as far as you can without changing the meaning.",
     },
     {

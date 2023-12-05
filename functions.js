@@ -1,3 +1,4 @@
+// Status messages
 const status = {
   noSelection: {
     message: "No text selection available",
@@ -10,9 +11,11 @@ const status = {
 const statusBar = document.querySelector("#status-bar");
 
 function displayStatus(status) {
+  // Helper function to display status message and color in toolbar
   statusBar.textContent = status.message;
   statusBar.style.backgroundColor = status.color;
   statusBar.style.visibility = "visible";
+  // For some messages, message should automatically disappear
   if (status.auto)
     setTimeout(() => {
       statusBar.style.visibility = "hidden";
@@ -20,7 +23,9 @@ function displayStatus(status) {
 }
 
 function toggleButtons() {
+  // Disable/enable buttons while GPT API is loading to prevent spam detection
   const daemons = document.querySelectorAll(".daemon");
+  // Disable all GPT-related functions
   daemons.forEach((daemon) => {
     daemon.disabled = !daemon.disabled;
     daemon.classList.toggle("disabled-daemon");
@@ -35,7 +40,9 @@ import { OPENAI_API_KEY } from "./config.js";
 
 // Make a request to the OpenAI ChatGPT API
 async function callGPT(messages) {
+  // Disable GPT function buttons while API is loading
   toggleButtons();
+  // Display loading status in toolbar
   displayStatus(status["loading"]);
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -50,12 +57,11 @@ async function callGPT(messages) {
       }),
     });
 
-    statusBar.style.visibility = "hidden";
-    toggleButtons();
-
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
+    statusBar.style.visibility = "hidden";
+    toggleButtons();
 
     const data = await response.json();
     const message = data.choices[0].message.content;
@@ -156,18 +162,17 @@ var quill = new Quill("#editor", {
 });
 
 async function highlightSelection() {
+  // Highlight editor selection with background color
   const range = quill.getSelection(true);
   quill.formatText(range.index, range.length, "background", "#99d1bc");
 }
 
 function replaceText(range, modelOutput) {
-  /*
-  Replace text in editor directly with model output
-  */
-
+  // Replace text in editor directly with model output
   let targetLength = range.length;
   let targetIndex = range.index;
 
+  // If no text is highlighted, replace entire text editor contents
   if (targetLength === 0) {
     targetLength = targetIndex;
     targetIndex = 0;
@@ -180,7 +185,10 @@ function replaceText(range, modelOutput) {
 }
 
 function getSelectedText() {
+  // Get text from text editor to pass to GPT API
   const range = quill.getSelection(true);
+
+  // Text is highlighted
   if (range.length !== 0 && range.index !== 0)
     return {
       text: quill.getText(range.index, range.length),
@@ -188,7 +196,7 @@ function getSelectedText() {
       endIndex: range.index + range.length - 1,
     };
 
-  // No text selection, call function on entire text window
+  // No text highlight selection, call function on entire text window
   const selectedText = {
     text: quill.getText(0, quill.getLength()),
     startIndex: 0,
@@ -222,11 +230,13 @@ async function showPopup(output, acceptButtonActive) {
   devilsAdvocateOutput.html(`<p>${formattedOutput}</p>`);
 
   acceptChangesBtn = $("#acceptButton");
+  // Don't show "Accept" button for Devil's Advocate
   if (!acceptButtonActive) {
     acceptChangesBtn.css("display", "none");
   } else {
     acceptChangesBtn.css("display", "inline");
     acceptChangesBtn.on("click", function () {
+      // Replace text editor contents with suggested text
       devilOutputContainer.removeClass("visible");
       devilsAdvocateOutput.empty();
       replaceText(quill.getSelection(true), output);

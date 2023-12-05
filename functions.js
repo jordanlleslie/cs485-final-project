@@ -96,7 +96,7 @@ async function devilsAdvocate(selectedText) {
   ];
 
   const output = await callGPT(messages);
-  await showPopup(output); // display output
+  await showPopup(output, false); // display output
 }
 
 async function smartFriend(selectedText) {
@@ -117,7 +117,7 @@ async function smartFriend(selectedText) {
     },
   ];
   const output = await callGPT(messages);
-  await showPopup(output); // display output
+  await showPopup(output, true); // display output
 }
 
 async function synthesizer(selectedText) {
@@ -138,7 +138,7 @@ async function synthesizer(selectedText) {
     },
   ];
   const output = await callGPT(messages);
-  await showPopup(output); // display output
+  await showPopup(output, true); // display output
 }
 
 ////////////////////////
@@ -207,7 +207,7 @@ function getSelectedText() {
 let closeModalBtn;
 let acceptChangesBtn;
 
-async function showPopup(output) {
+async function showPopup(output, acceptButtonActive) {
   const formattedOutput = output
     .split("\n")
     .map((line) => `<p>${line}</p>`)
@@ -221,11 +221,16 @@ async function showPopup(output) {
   devilsAdvocateOutput.html(`<p>${formattedOutput}</p>`);
 
   acceptChangesBtn = $("#acceptButton");
-  acceptChangesBtn.on("click", function () {
-    devilOutputContainer.removeClass("visible");
-    devilsAdvocateOutput.empty();
-    replaceText(quill.getSelection(true), output);
-  });
+  if (!acceptButtonActive) {
+    acceptChangesBtn.css("display", "none");
+  } else {
+    acceptChangesBtn.css("display", "inline");
+    acceptChangesBtn.on("click", function () {
+      devilOutputContainer.removeClass("visible");
+      devilsAdvocateOutput.empty();
+      replaceText(quill.getSelection(true), output);
+    });
+  }
 
   closeModalBtn = $("#dismissButton");
   closeModalBtn.on("click", function () {

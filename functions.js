@@ -159,7 +159,7 @@ async function highlightSelection() {
   quill.formatText(range.index, range.length, "background", "#99d1bc");
 }
 
-async function replaceText(range, modelOutput) {
+function replaceText(range, modelOutput) {
   /*
   Replace text in editor directly with model output
   */
@@ -176,10 +176,6 @@ async function replaceText(range, modelOutput) {
   quill.updateContents(
     new Delta().retain(targetIndex).delete(targetLength).insert(modelOutput)
   );
-  quill.formatText(targetIndex, targetLength, "background", "#99d1bc");
-  setTimeout(() => {
-    quill.removeFormat(targetIndex, targetLength);
-  }, 2000);
 }
 
 function getSelectedText() {
@@ -209,6 +205,7 @@ function getSelectedText() {
 // HELPER FUNCTIONS ////
 ////////////////////////
 let closeModalBtn;
+let acceptChangesBtn;
 
 async function showPopup(output) {
   const formattedOutput = output
@@ -223,6 +220,13 @@ async function showPopup(output) {
   devilOutputContainer.toggleClass("visible", !!formattedOutput);
   devilsAdvocateOutput.html(`<p>${formattedOutput}</p>`);
 
+  acceptChangesBtn = $("#acceptButton");
+  acceptChangesBtn.on("click", function () {
+    devilOutputContainer.removeClass("visible");
+    devilsAdvocateOutput.empty();
+    replaceText(quill.getSelection(true), output);
+  });
+
   closeModalBtn = $("#dismissButton");
   closeModalBtn.on("click", function () {
     // Hide devilOutputContainer and clear its content on closing the modal
@@ -230,7 +234,6 @@ async function showPopup(output) {
     devilsAdvocateOutput.empty();
     // unhighlight text
     quill.formatText(0, quill.getLength(), "background", false);
-    // modal.css("display", "none");
   });
 }
 

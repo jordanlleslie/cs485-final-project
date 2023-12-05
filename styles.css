@@ -40,13 +40,6 @@
   margin-left: 40px;
 }
 
-#undo {
-  background: url("./images/undo.png");
-}
-
-#redo {
-  background: url("./images/redo.png");
-}
 body {
   margin: 2% 5%;
   margin-bottom: 0;

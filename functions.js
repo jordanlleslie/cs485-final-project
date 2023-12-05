@@ -1,4 +1,6 @@
-// Status messages
+let openaiApiKey;
+
+// Define status messages for the status bar
 const status = {
   noSelection: {
     message: "No text selection available",
@@ -8,24 +10,23 @@ const status = {
   loading: { message: "Loading ...", color: "green", auto: false },
 };
 
+// Get the status bar element
 const statusBar = document.querySelector("#status-bar");
 
+// Function to display a status message in the status bar
 function displayStatus(status) {
-  // Helper function to display status message and color in toolbar
   statusBar.textContent = status.message;
   statusBar.style.backgroundColor = status.color;
   statusBar.style.visibility = "visible";
-  // For some messages, message should automatically disappear
   if (status.auto)
     setTimeout(() => {
       statusBar.style.visibility = "hidden";
     }, 2000);
 }
 
+// Function to toggle the disabled state and class of daemon buttons
 function toggleButtons() {
-  // Disable/enable buttons while GPT API is loading to prevent spam detection
   const daemons = document.querySelectorAll(".daemon");
-  // Disable all GPT-related functions
   daemons.forEach((daemon) => {
     daemon.disabled = !daemon.disabled;
     daemon.classList.toggle("disabled-daemon");
@@ -36,20 +37,20 @@ function toggleButtons() {
 // API STUFF ///////////
 ////////////////////////
 
-import { OPENAI_API_KEY } from "./config.js";
-
 // Make a request to the OpenAI ChatGPT API
 async function callGPT(messages) {
-  // Disable GPT function buttons while API is loading
+  if (!openaiApiKey) {
+    // Prompt the user for the API key if not available
+    openaiApiKey = prompt("Please enter your OpenAI API key:");
+  }
   toggleButtons();
-  // Display loading status in toolbar
   displayStatus(status["loading"]);
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${openaiApiKey}`,
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
@@ -57,11 +58,12 @@ async function callGPT(messages) {
       }),
     });
 
+    statusBar.style.visibility = "hidden";
+    toggleButtons();
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    statusBar.style.visibility = "hidden";
-    toggleButtons();
 
     const data = await response.json();
     const message = data.choices[0].message.content;
@@ -72,8 +74,10 @@ async function callGPT(messages) {
   }
 }
 
+// Function to invoke Devil's Advocate daemon
 async function devilsAdvocate(selectedText) {
   const messages = [
+    // System message guiding the AI behavior
     {
       role: "system",
       content:
@@ -86,6 +90,7 @@ async function devilsAdvocate(selectedText) {
         After each question, briefly explain how answering the question can strengthen the argument.\
         After explaining how answering the question can strengthen the argument, provide a counter argument.",
     },
+    // System message specifying the response format
     {
       role: "system",
       content:
@@ -95,6 +100,7 @@ async function devilsAdvocate(selectedText) {
         [Counter Argument]\n\n\
         2. [Question]",
     },
+    // User message containing the selected text
     {
       role: "user",
       content: selectedText,
@@ -102,11 +108,14 @@ async function devilsAdvocate(selectedText) {
   ];
 
   const output = await callGPT(messages);
-  await showPopup(output, false); // display output
+  console.log(output);
+  await showPopup(output); // Display output in a popup
 }
 
+// Function to invoke Smart Friend daemon
 async function smartFriend(selectedText) {
   const messages = [
+    // System message guiding the AI behavior
     {
       role: "system",
       content:
@@ -114,9 +123,9 @@ async function smartFriend(selectedText) {
         The user will input a text sample. \
         If the text is not verbose, respond with the original text.\
         If the text is verbose, you should revise the text to be less verbose.\
-        Replace jargon with words that the average person can understand. \
         Do not add or remove meaning from the text. Only revise as far as you can without changing the meaning.",
     },
+    // User message containing the selected text
     {
       role: "user",
       content: `SAMPLE: ${selectedText}\n\
@@ -124,11 +133,15 @@ async function smartFriend(selectedText) {
     },
   ];
   const output = await callGPT(messages);
-  await showPopup(output, true); // display output
+  console.log(output);
+
+  await showPopup(output); // Display output in a popup
 }
 
+// Function to invoke Synthesizer daemon
 async function synthesizer(selectedText) {
   const messages = [
+    // System message guiding the AI behavior
     {
       role: "system",
       content:
@@ -138,6 +151,7 @@ async function synthesizer(selectedText) {
         If there are redundancies, you should revise the text sample to be less redundant.\
         Do not add or remove meaning from the text. Only revise as far as you can without changing the meaning.",
     },
+    // User message containing the selected text
     {
       role: "user",
       content: `SAMPLE: ${selectedText}\n\
@@ -145,15 +159,16 @@ async function synthesizer(selectedText) {
     },
   ];
   const output = await callGPT(messages);
-  await showPopup(output, true); // display output
+  console.log(output);
+  await showPopup(output); // Display output in a popup
 }
 
 ////////////////////////
 // QUILL STUFF//////////
 ////////////////////////
 
+// Import Quill module and create a Quill editor
 var Delta = Quill.import("delta");
-
 var quill = new Quill("#editor", {
   theme: "snow",
   modules: {
@@ -161,18 +176,17 @@ var quill = new Quill("#editor", {
   },
 });
 
+// Function to highlight the current text selection in the Quill editor
 async function highlightSelection() {
-  // Highlight editor selection with background color
   const range = quill.getSelection(true);
   quill.formatText(range.index, range.length, "background", "#99d1bc");
 }
 
-function replaceText(range, modelOutput) {
-  // Replace text in editor directly with model output
+// Function to replace text in the editor with model output
+async function replaceText(range, modelOutput) {
   let targetLength = range.length;
   let targetIndex = range.index;
 
-  // If no text is highlighted, replace entire text editor contents
   if (targetLength === 0) {
     targetLength = targetIndex;
     targetIndex = 0;
@@ -182,21 +196,23 @@ function replaceText(range, modelOutput) {
   quill.updateContents(
     new Delta().retain(targetIndex).delete(targetLength).insert(modelOutput)
   );
+  quill.formatText(targetIndex, targetLength, "background", "#99d1bc");
+  setTimeout(() => {
+    quill.removeFormat(targetIndex, targetLength);
+  }, 2000);
 }
 
+// Function to get the currently selected text in the Quill editor
 function getSelectedText() {
-  // Get text from text editor to pass to GPT API
   const range = quill.getSelection(true);
-
-  // Text is highlighted
   if (range.length !== 0 && range.index !== 0)
-    return {
+    return {      
       text: quill.getText(range.index, range.length),
       startIndex: range.index,
       endIndex: range.index + range.length - 1,
     };
 
-  // No text highlight selection, call function on entire text window
+  // No text selection, call function on the entire text window
   const selectedText = {
     text: quill.getText(0, quill.getLength()),
     startIndex: 0,
@@ -213,14 +229,15 @@ function getSelectedText() {
 ////////////////////////
 // HELPER FUNCTIONS ////
 ////////////////////////
-let closeModalBtn;
-let acceptChangesBtn;
 
-async function showPopup(output, acceptButtonActive) {
+let closeModalBtn;
+
+// Function to show a popup with the provided output
+async function showPopup(output) {
   const formattedOutput = output
     .split("\n")
     .map((line) => `<p>${line}</p>`)
-    .join("");
+    .join('');
 
   const devilsAdvocateOutput = $("#devilOutput");
   const devilOutputContainer = $("#devilOutputContainer");
@@ -229,67 +246,55 @@ async function showPopup(output, acceptButtonActive) {
   devilOutputContainer.toggleClass("visible", !!formattedOutput);
   devilsAdvocateOutput.html(`<p>${formattedOutput}</p>`);
 
-  acceptChangesBtn = $("#acceptButton");
-  // Don't show "Accept" button for Devil's Advocate
-  if (!acceptButtonActive) {
-    acceptChangesBtn.css("display", "none");
-  } else {
-    acceptChangesBtn.css("display", "inline");
-    acceptChangesBtn.on("click", function () {
-      // Replace text editor contents with suggested text
-      devilOutputContainer.removeClass("visible");
-      devilsAdvocateOutput.empty();
-      replaceText(quill.getSelection(true), output);
-    });
-  }
-
   closeModalBtn = $("#dismissButton");
   closeModalBtn.on("click", function () {
     // Hide devilOutputContainer and clear its content on closing the modal
     devilOutputContainer.removeClass("visible");
     devilsAdvocateOutput.empty();
-    // unhighlight text
+    // Unhighlight text
     quill.formatText(0, quill.getLength(), "background", false);
   });
 }
 
-document
-  .querySelector("#synthesizer")
-  .addEventListener("click", async function () {
-    // remove prior highlights if any
-    quill.formatText(0, quill.getLength(), "background", false);
-    const selection = getSelectedText();
-    if (!selection) return;
-    highlightSelection();
-    synthesizer(selection.text);
-  });
+// Event listener for the Synthesizer button click
+document.querySelector("#synthesizer").addEventListener("click", async function () {
+  // Remove prior highlights if any
+  quill.formatText(0, quill.getLength(), "background", false);
+  const selection = getSelectedText();
+  if (!selection) return;
+  highlightSelection();
+  synthesizer(selection.text);
+});
 
-document
-  .querySelector("#smartFriend")
-  .addEventListener("click", async function () {
-    // remove prior highlights if any
-    quill.formatText(0, quill.getLength(), "background", false);
-    const selection = getSelectedText();
-    if (!selection) return;
-    highlightSelection();
-    smartFriend(selection.text);
-  });
+// Event listener for the Smart Friend button click
+document.querySelector("#smartFriend").addEventListener("click", async function () {
+  // Remove prior highlights if any
+  quill.formatText(0, quill.getLength(), "background", false);
+  const selection = getSelectedText();
+  if (!selection) return;
+  highlightSelection();
+  smartFriend(selection.text);
+});
 
-document
-  .querySelector("#devilsAdvocate")
-  .addEventListener("click", async function () {
-    // remove prior highlights if any
-    quill.formatText(0, quill.getLength(), "background", false);
-    const selection = getSelectedText();
-    if (!selection) return;
-    highlightSelection();
-    devilsAdvocate(selection.text);
-  });
+// Event listener for the Devil's Advocate button click
+document.querySelector("#devilsAdvocate").addEventListener("click", async function () {
+  // Remove prior highlights if any
+  quill.formatText(0, quill.getLength(), "background", false);
+  const selection = getSelectedText();
+  if (!selection) return;
+  highlightSelection();
+  devilsAdvocate(selection.text);
+});
 
+// Event listener for the Undo button click
 document.querySelector("#undo").addEventListener("click", function () {
   quill.history.undo();
 });
 
+// Event listener for the Redo button click
 document.querySelector("#redo").addEventListener("click", function () {
   quill.history.redo();
 });
+
+     
+

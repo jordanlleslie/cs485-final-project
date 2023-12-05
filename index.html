@@ -1,47 +1,76 @@
+<!DOCTYPE html>
+
 <html>
     <head>
+        <!-- Set the character set for the document -->
+        <meta charset="UTF-8">
+
+        <!-- Include Quill.js styles -->
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+        <!-- Include Quill.js script -->
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+        <!-- Include external JavaScript module -->
+        <script src="./functions.js" type="module"></script>
+
+        <!-- Include jQuery library -->
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+        <!-- Include jQuery UI library -->
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+        <!-- Include React development scripts -->
         <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
         <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-        <script src="./functions.js" type="module"></script>
+
+        <!-- Include custom styles -->
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
+        <!-- Introduction section -->
         <div id="intro">
             <h1>Demo: Daemons</h1>
             <ul>
-                <li>Try writing in the text editor below! </li>
+                <li>Try writing in the text editor below!</li>
                 <li>The Synthesizer makes your writing more concise.</li>
                 <li>The Smart Friend makes your writing less jargony and verbose.</li>
                 <li>The Devil's Advocate will suggest counter-arguments to your writing, to help you strengthen your reasoning and address opposing points.</li>
+                <li>The Synthesizer and Smart Friend will make changes to your text, but don't worry- if you don't like their changes, you can undo them!</li>
                 <li>Each daemon will work on the full text or, alternatively, highlight a portion of your text to make more specific changes.</li>
             </ul>
-
         </div>
+
+        <!-- Modal section -->
+        <!-- <div id="myModal"> </div> -->
+
+        <!-- Devil's Advocate output container -->
         <div id="devilOutputContainer">
             <div id="devilOutput"></div>
-            <button id="acceptButton">Accept</button>
-            <button id="dismissButton">Dismiss</button>
+            <button id="dismissButton">Close/Dismiss</button>
         </div>
 
+        <!-- Toolbar section -->
         <div id="toolbar">
-            <button class="daemon" id="synthesizer" tooltip="Increases conciseness">👇 Synthesizer</button>
-            <button class="daemon" id="smartFriend" tooltip="Reduces verboseness">🧠 Smart Friend</button>
+            <!-- Daemon buttons with tooltips -->
+            <button class="daemon" id="synthesizer" tooltip="Increases conciseness of text">👇 Synthesizer</button>
+            <button class="daemon" id="smartFriend" tooltip="Reduces verboseness of text">🧠 Smart Friend</button>
             <button class="daemon" id="devilsAdvocate" tooltip="Suggests counter-arguments">😈 Devil's Advocate</button>
-            <!-- ... other toolbar items ... -->
+
+            <!-- Undo and Redo buttons -->
             <button id="undo">undo</button>
             <button id="redo">redo</button>
+
+            <!-- Other toolbar items -->
             <button class="ql-bold">Bold</button>
             <button class="ql-italic">Italic</button>
             <div id="status-bar"></div>
         </div>
-        
-          <div id="editor">
+
+        <!-- Quill editor container -->
+        <div id="editor">
             <!-- This is where Quill will place the editor's content -->
-          </div>
-    
+        </div>
     </body>
 </html>
+

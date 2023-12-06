@@ -109,7 +109,7 @@ async function devilsAdvocate(selectedText) {
 
   const output = await callGPT(messages);
   console.log(output);
-  await showPopup(output); // Display output in a popup
+  await showPopup(output, false); // Display output in a popup
 }
 
 // Function to invoke Smart Friend daemon
@@ -135,7 +135,7 @@ async function smartFriend(selectedText) {
   const output = await callGPT(messages);
   console.log(output);
 
-  await showPopup(output); // Display output in a popup
+  await showPopup(output, true); // Display output in a popup
 }
 
 // Function to invoke Synthesizer daemon
@@ -160,7 +160,7 @@ async function synthesizer(selectedText) {
   ];
   const output = await callGPT(messages);
   console.log(output);
-  await showPopup(output); // Display output in a popup
+  await showPopup(output, true); // Display output in a popup
 }
 
 ////////////////////////
@@ -196,17 +196,13 @@ async function replaceText(range, modelOutput) {
   quill.updateContents(
     new Delta().retain(targetIndex).delete(targetLength).insert(modelOutput)
   );
-  quill.formatText(targetIndex, targetLength, "background", "#99d1bc");
-  setTimeout(() => {
-    quill.removeFormat(targetIndex, targetLength);
-  }, 2000);
 }
 
 // Function to get the currently selected text in the Quill editor
 function getSelectedText() {
   const range = quill.getSelection(true);
   if (range.length !== 0 && range.index !== 0)
-    return {      
+    return {
       text: quill.getText(range.index, range.length),
       startIndex: range.index,
       endIndex: range.index + range.length - 1,
@@ -229,15 +225,14 @@ function getSelectedText() {
 ////////////////////////
 // HELPER FUNCTIONS ////
 ////////////////////////
-
 let closeModalBtn;
+let acceptChangesBtn;
 
-// Function to show a popup with the provided output
-async function showPopup(output) {
+async function showPopup(output, acceptButtonActive) {
   const formattedOutput = output
     .split("\n")
     .map((line) => `<p>${line}</p>`)
-    .join('');
+    .join("");
 
   const devilsAdvocateOutput = $("#devilOutput");
   const devilOutputContainer = $("#devilOutputContainer");
@@ -245,6 +240,20 @@ async function showPopup(output) {
   // Toggle visibility of devilOutputContainer
   devilOutputContainer.toggleClass("visible", !!formattedOutput);
   devilsAdvocateOutput.html(`<p>${formattedOutput}</p>`);
+
+  acceptChangesBtn = $("#acceptButton");
+  // Don't show "Accept" button for Devil's Advocate
+  if (!acceptButtonActive) {
+    acceptChangesBtn.css("display", "none");
+  } else {
+    acceptChangesBtn.css("display", "inline");
+    acceptChangesBtn.on("click", function () {
+      // Replace text editor contents with suggested text
+      devilOutputContainer.removeClass("visible");
+      devilsAdvocateOutput.empty();
+      replaceText(quill.getSelection(true), output);
+    });
+  }
 
   closeModalBtn = $("#dismissButton");
   closeModalBtn.on("click", function () {
@@ -257,34 +266,40 @@ async function showPopup(output) {
 }
 
 // Event listener for the Synthesizer button click
-document.querySelector("#synthesizer").addEventListener("click", async function () {
-  // Remove prior highlights if any
-  quill.formatText(0, quill.getLength(), "background", false);
-  const selection = getSelectedText();
-  if (!selection) return;
-  highlightSelection();
-  synthesizer(selection.text);
-});
+document
+  .querySelector("#synthesizer")
+  .addEventListener("click", async function () {
+    // Remove prior highlights if any
+    quill.formatText(0, quill.getLength(), "background", false);
+    const selection = getSelectedText();
+    if (!selection) return;
+    highlightSelection();
+    synthesizer(selection.text);
+  });
 
 // Event listener for the Smart Friend button click
-document.querySelector("#smartFriend").addEventListener("click", async function () {
-  // Remove prior highlights if any
-  quill.formatText(0, quill.getLength(), "background", false);
-  const selection = getSelectedText();
-  if (!selection) return;
-  highlightSelection();
-  smartFriend(selection.text);
-});
+document
+  .querySelector("#smartFriend")
+  .addEventListener("click", async function () {
+    // Remove prior highlights if any
+    quill.formatText(0, quill.getLength(), "background", false);
+    const selection = getSelectedText();
+    if (!selection) return;
+    highlightSelection();
+    smartFriend(selection.text);
+  });
 
 // Event listener for the Devil's Advocate button click
-document.querySelector("#devilsAdvocate").addEventListener("click", async function () {
-  // Remove prior highlights if any
-  quill.formatText(0, quill.getLength(), "background", false);
-  const selection = getSelectedText();
-  if (!selection) return;
-  highlightSelection();
-  devilsAdvocate(selection.text);
-});
+document
+  .querySelector("#devilsAdvocate")
+  .addEventListener("click", async function () {
+    // Remove prior highlights if any
+    quill.formatText(0, quill.getLength(), "background", false);
+    const selection = getSelectedText();
+    if (!selection) return;
+    highlightSelection();
+    devilsAdvocate(selection.text);
+  });
 
 // Event listener for the Undo button click
 document.querySelector("#undo").addEventListener("click", function () {
@@ -295,6 +310,3 @@ document.querySelector("#undo").addEventListener("click", function () {
 document.querySelector("#redo").addEventListener("click", function () {
   quill.history.redo();
 });
-
-     
-

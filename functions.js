@@ -246,6 +246,20 @@ async function showPopup(output) {
   devilOutputContainer.toggleClass("visible", !!formattedOutput);
   devilsAdvocateOutput.html(`<p>${formattedOutput}</p>`);
 
+  acceptChangesBtn = $("#acceptButton");
+  // Don't show "Accept" button for Devil's Advocate
+  if (!acceptButtonActive) {
+    acceptChangesBtn.css("display", "none");
+  } else {
+    acceptChangesBtn.css("display", "inline");
+    acceptChangesBtn.on("click", function () {
+      // Replace text editor contents with suggested text
+      devilOutputContainer.removeClass("visible");
+      devilsAdvocateOutput.empty();
+      replaceText(quill.getSelection(true), output);
+    });
+  }
+
   closeModalBtn = $("#dismissButton");
   closeModalBtn.on("click", function () {
     // Hide devilOutputContainer and clear its content on closing the modal
